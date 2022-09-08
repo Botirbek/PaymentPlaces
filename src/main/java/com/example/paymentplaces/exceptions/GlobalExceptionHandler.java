@@ -4,7 +4,6 @@ import com.example.paymentplaces.dto.response.AppErrorDTO;
 import com.example.paymentplaces.dto.response.DataDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -19,19 +18,24 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<DataDTO<AppErrorDTO>> handle500(RuntimeException e, WebRequest webRequest) {
         return ResponseEntity.ok
                 (new DataDTO<>(
-                        new AppErrorDTO(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), webRequest)));
+                        new AppErrorDTO(
+                                HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), webRequest)));
     }
 
     @ExceptionHandler(value = {BadRequestException.class})
     public ResponseEntity<DataDTO<AppErrorDTO>> handle400(BadRequestException e, WebRequest webRequest) {
-        return new ResponseEntity<>(new DataDTO<>(
-                new AppErrorDTO(HttpStatus.BAD_REQUEST, e.getMessage(), webRequest)),HttpStatus.BAD_REQUEST);
+        return ResponseEntity.ok(
+                new DataDTO<>(
+                        new AppErrorDTO(
+                                HttpStatus.BAD_REQUEST, e.getMessage(), webRequest)));
     }
 
     @ExceptionHandler(value = {NotFoundException.class})
     public ResponseEntity<DataDTO<AppErrorDTO>> handle404(RuntimeException e, WebRequest webRequest) {
-        return new ResponseEntity<>(new DataDTO<>(
-                new AppErrorDTO(HttpStatus.NOT_FOUND, e.getMessage(), webRequest)), HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok(
+                new DataDTO<>(
+                        new AppErrorDTO(
+                                HttpStatus.NOT_FOUND, e.getMessage(), webRequest)));
     }
 
 

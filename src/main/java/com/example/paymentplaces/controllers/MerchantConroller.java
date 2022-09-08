@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -21,14 +22,14 @@ public class MerchantConroller implements GenericCrudController<MerchantCreateDT
     private final MerchantService merchantService;
 
     @Override
-    @PostMapping("/create1")
-    public ResponseEntity<DataDTO<Long>> create(MerchantCreateDTO dto) {
+    @PostMapping("/create")
+    public ResponseEntity<DataDTO<Long>> create(@RequestBody @Valid MerchantCreateDTO dto) {
         return merchantService.create(dto);
     }
 
     @Override
     @PostMapping("/update")
-    public ResponseEntity<DataDTO<Long>> update(MerchantUpdateDTO dto) {
+    public ResponseEntity<DataDTO<Long>> update(@RequestBody MerchantUpdateDTO dto) {
         return merchantService.update(dto);
     }
 

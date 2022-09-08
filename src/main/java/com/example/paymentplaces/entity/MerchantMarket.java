@@ -31,4 +31,12 @@ public class MerchantMarket {
     @Column(name = "latitude", nullable = false)
     private double latitude;
 
+    public MerchantMarket(String name, String address, String status, double longtitude, double latitude) {
+        this.name = name;
+        this.address = address;
+        this.status = status;
+        this.longtitude = longtitude;
+        this.latitude = latitude;
+    }
+
 }

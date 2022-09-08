@@ -1,5 +1,6 @@
 package com.example.paymentplaces.controllers;
 
+import com.example.paymentplaces.dto.LocationDTO;
 import com.example.paymentplaces.dto.merchantMarket.MerchantMarketCreateDTO;
 import com.example.paymentplaces.dto.merchantMarket.MerchantMarketUpdatedDTO;
 import com.example.paymentplaces.dto.response.DataDTO;
@@ -21,13 +22,13 @@ public class MerchantMarketConroller implements GenericCrudController<MerchantMa
 
     @Override
     @PostMapping("/create")
-    public ResponseEntity<DataDTO<Long>> create(MerchantMarketCreateDTO dto) {
+    public ResponseEntity<DataDTO<Long>> create(@RequestBody MerchantMarketCreateDTO dto) {
         return merchantMarketService.create(dto);
     }
 
     @Override
     @PostMapping("/update")
-    public ResponseEntity<DataDTO<Long>> update(MerchantMarketUpdatedDTO dto) {
+    public ResponseEntity<DataDTO<Long>> update(@RequestBody MerchantMarketUpdatedDTO dto) {
         return merchantMarketService.update(dto);
     }
 
@@ -57,4 +58,10 @@ public class MerchantMarketConroller implements GenericCrudController<MerchantMa
     public ResponseEntity<DataDTO<List<MerchantMarket>>> getAllDeleted() {
         return merchantMarketService.getAllbyStatus(MerchatnStatusEnum.DELETED.name());
     }
+
+    @GetMapping("/getNearMarkets")
+    public ResponseEntity<DataDTO<List<MerchantMarket>>> getNearMarkets(@RequestBody LocationDTO locationDTO) {
+        return merchantMarketService.getNearMarkets(locationDTO);
+    }
+
 }

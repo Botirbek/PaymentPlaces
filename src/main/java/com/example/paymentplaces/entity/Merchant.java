@@ -34,8 +34,7 @@ public class Merchant {
 
     private String status;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<MerchantMarket> merchantMarketList;
-
 
 }

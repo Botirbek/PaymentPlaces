@@ -14,4 +14,13 @@ public interface MerchantMarketRepository  extends JpaRepository<MerchantMarket,
     @Query("select m from MerchantMarket m where m.status = ?1")
     List<MerchantMarket> findAllByStatus(String status);
 
+
+    @Query(nativeQuery = true, value = "select SQRT(\n" +
+            "                   POW(69.1 * (latitude - ?1), 2) +\n" +
+            "                   POW(69.1 * (?2- longtitude) * COS(latitude / 57.3), 2)) AS distance,*\n" +
+            "from merchant_market\n" +
+            "where status = 'ACTIVE'\n" +
+            "order by distance asc ;")
+    List<MerchantMarket> findNearMarkets(Double lan1, Double lon1);
+
 }

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,13 +32,24 @@ public class MerchantService {
     }
 
     public ResponseEntity<DataDTO<Long>> create(MerchantCreateDTO dto) {
+        List<MerchantMarket> list = new ArrayList<>();
+        dto.getMerchantMarketList()
+                .forEach(merchantMarketCreateDTO ->
+                        list.add(new MerchantMarket(
+                                merchantMarketCreateDTO.getName(),
+                                merchantMarketCreateDTO.getAddress(),
+                                MerchatnStatusEnum.ACTIVE.name(),
+                                merchantMarketCreateDTO.getLatitude(),
+                                merchantMarketCreateDTO.getLongtitude()
+                        )));
+
         Merchant merchant = Merchant.builder()
                 .INN(dto.getINN())
                 .MFO(dto.getMFO())
                 .organizationName(dto.getOrganizationName())
                 .phoneNumber(dto.getPhoneNumber())
                 .status(MerchatnStatusEnum.ACTIVE.name())
-//                .merchantMarketList(dto.getMerchantMarketList())
+                .merchantMarketList(list)
                 .logo(dto.getLogo())
                 .build();
 

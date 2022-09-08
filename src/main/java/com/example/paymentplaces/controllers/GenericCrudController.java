@@ -3,6 +3,7 @@ package com.example.paymentplaces.controllers;
 import com.example.paymentplaces.dto.base.BaseDTO;
 import com.example.paymentplaces.dto.response.DataDTO;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
