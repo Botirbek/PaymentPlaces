@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: Payment Places
+  datasource:
+    url: jdbc:postgresql://localhost:5433/payment_places
+    username: admin
+    password: password
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      properties:
+        hibernate:
+          format_sql: true
+
+server:
+  port: 8050
+
+springdoc:
+  swagger-ui:
+    path: swagger-ui
+  api-docs:
+    path: /api-docs

@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+
+  postgres:
+    container_name: payment_places
+    image: postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: payment_places
+#    volumes:
+#      - postgres:/data/postgres
+    ports:
+      - "5433:5432"
+
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+
+
+##  networks and volumes
+#  networks:
+#    postgres:
+#      driver: bridge
+
+#  volumes:
+#    postgres:
+#    pgadmin:
