@@ -1,13 +1,13 @@
 package com.example.paymentplaces.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class LocationDTO {
-    private double longtitude;
     private double latitude;
+    private double longtitude;
 }

@@ -3,6 +3,7 @@ package com.example.paymentplaces.services;
 import com.example.paymentplaces.dto.LocationDTO;
 import com.example.paymentplaces.dto.merchantMarket.MerchantMarketCreateDTO;
 import com.example.paymentplaces.dto.merchantMarket.MerchantMarketUpdatedDTO;
+import com.example.paymentplaces.dto.merchantMarket.NearMerchantMarketDTO;
 import com.example.paymentplaces.dto.response.DataDTO;
 import com.example.paymentplaces.entity.MerchantMarket;
 import com.example.paymentplaces.enums.MerchatnStatusEnum;
@@ -11,7 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import javax.persistence.Tuple;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,25 +74,34 @@ public class MerchantMarketService {
         return ResponseEntity.ok(new DataDTO<>(merchantMarket.getId()));
     }
 
-    public ResponseEntity<DataDTO<List<MerchantMarket>>> getNearMarkets(LocationDTO locationDTO) {
-        List<MerchantMarket> list = new ArrayList<>();
-        return ResponseEntity.ok(new DataDTO<>(merchantMarketRepository.findAllByStatus(MerchatnStatusEnum.ACTIVE.name())));
+    public ResponseEntity<DataDTO<List<NearMerchantMarketDTO>>> getNearMarkets(LocationDTO locationDTO) {
+        List<Tuple> tupleList = merchantMarketRepository.findNearMarkets(locationDTO.getLatitude(), locationDTO.getLongtitude());
+
+        List<NearMerchantMarketDTO> nearMerchantMarketDTOS = tupleList.stream().map(
+                tuple -> new NearMerchantMarketDTO(
+                        Long.parseLong(tuple.get(0).toString()),
+                        tuple.get(1, String.class),
+                        tuple.get(2, String.class),
+                        Double.parseDouble(tuple.get(3).toString())
+                )
+        ).toList();
+
+        return ResponseEntity.ok(new DataDTO<>(nearMerchantMarketDTOS));
     }
 
-
-    private static double distance(double lat1, double lon1, double lat2, double lon2) {
-        if ((lat1 == lat2) && (lon1 == lon2)) {
-            return 0;
-        }
-        else {
-            double theta = lon1 - lon2;
-            double dist = Math.sin(Math.toRadians(lat1)) * Math.sin(Math.toRadians(lat2)) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.cos(Math.toRadians(theta));
-            dist = Math.acos(dist);
-            dist = Math.toDegrees(dist);
-            dist = dist * 60 * 1.1515;
-            dist = dist * 1.609344;
-
-            return (dist);
-        }
-    }
+//    private static double distance(double lat1, double lon1, double lat2, double lon2) {
+//        if ((lat1 == lat2) && (lon1 == lon2)) {
+//            return 0;
+//        }
+//        else {
+//            double theta = lon1 - lon2;
+//            double dist = Math.sin(Math.toRadians(lat1)) * Math.sin(Math.toRadians(lat2)) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.cos(Math.toRadians(theta));
+//            dist = Math.acos(dist);
+//            dist = Math.toDegrees(dist);
+//            dist = dist * 60 * 1.1515;
+//            dist = dist * 1.609344;
+//
+//            return (dist);
+//        }
+//    }
 }

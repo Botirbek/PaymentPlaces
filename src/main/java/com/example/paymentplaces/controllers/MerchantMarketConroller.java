@@ -3,6 +3,7 @@ package com.example.paymentplaces.controllers;
 import com.example.paymentplaces.dto.LocationDTO;
 import com.example.paymentplaces.dto.merchantMarket.MerchantMarketCreateDTO;
 import com.example.paymentplaces.dto.merchantMarket.MerchantMarketUpdatedDTO;
+import com.example.paymentplaces.dto.merchantMarket.NearMerchantMarketDTO;
 import com.example.paymentplaces.dto.response.DataDTO;
 import com.example.paymentplaces.entity.MerchantMarket;
 import com.example.paymentplaces.enums.MerchatnStatusEnum;
@@ -60,8 +61,8 @@ public class MerchantMarketConroller implements GenericCrudController<MerchantMa
     }
 
     @GetMapping("/getNearMarkets")
-    public ResponseEntity<DataDTO<List<MerchantMarket>>> getNearMarkets(@RequestBody LocationDTO locationDTO) {
-        return merchantMarketService.getNearMarkets(locationDTO);
+    public ResponseEntity<DataDTO<List<NearMerchantMarketDTO>>> getNearMarkets(LocationDTO dto) {
+        return merchantMarketService.getNearMarkets(dto);
     }
 
 }
