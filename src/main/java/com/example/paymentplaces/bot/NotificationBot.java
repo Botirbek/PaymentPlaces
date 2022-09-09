@@ -50,7 +50,6 @@ public class NotificationBot extends TelegramLongPollingBot {
                 botUserService.save(botUser);
             }
         }
-
     }
 
     private void registerMerchant(Update update, BotUser botUser) {

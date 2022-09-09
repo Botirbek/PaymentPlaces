@@ -23,6 +23,8 @@ public class MerchantMarket {
 
     private String address;
 
+    private Yepost yepost;
+
     private String status;
 
     @Column(name = "longtitude", nullable = false)
