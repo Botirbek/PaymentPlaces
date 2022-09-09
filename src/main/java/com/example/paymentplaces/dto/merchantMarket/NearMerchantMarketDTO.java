@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class NearMerchantMarketDTO {
-    private Long id;
+    private Long market_id;
+    private Long merchant_id;
+    private String organization_name;
     private String name;
     private String address;
     private double distance;

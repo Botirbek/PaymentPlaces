@@ -83,4 +83,5 @@ public class MerchantService {
     public ResponseEntity<DataDTO<List<Merchant>>> getAllbyStatus(String status) {
         return ResponseEntity.ok(new DataDTO<>(merchantRepository.findAllByStatus(status)));
     }
+
 }

@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.Tuple;
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,9 +79,11 @@ public class MerchantMarketService {
         List<NearMerchantMarketDTO> nearMerchantMarketDTOS = tupleList.stream().map(
                 tuple -> new NearMerchantMarketDTO(
                         Long.parseLong(tuple.get(0).toString()),
-                        tuple.get(1, String.class),
+                        Long.parseLong(tuple.get(1).toString()),
                         tuple.get(2, String.class),
-                        Double.parseDouble(tuple.get(3).toString())
+                        tuple.get(3, String.class),
+                        tuple.get(4, String.class),
+                        Double.parseDouble(tuple.get(5).toString())
                 )
         ).toList();
 
@@ -104,4 +105,5 @@ public class MerchantMarketService {
 //            return (dist);
 //        }
 //    }
+
 }
