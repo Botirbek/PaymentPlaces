@@ -2,6 +2,7 @@ package com.example.paymentplaces.dto.merchantMarket;
 
 
 import com.example.paymentplaces.dto.base.BaseDTO;
+import com.example.paymentplaces.entity.Epos;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,4 +28,5 @@ public class MerchantMarketCreateDTO implements BaseDTO {
     @NotBlank(message = "Merchant market latitude cannot be blank")
     private double latitude;
 
+    private EposDTO epos;
 }

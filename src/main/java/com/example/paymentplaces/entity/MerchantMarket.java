@@ -1,9 +1,6 @@
 package com.example.paymentplaces.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -12,18 +9,13 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 @Entity
+@EqualsAndHashCode(callSuper=false)
 @Table(name = "merchant_market")
-public class MerchantMarket {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class MerchantMarket extends BasicEntity{
 
     private String name;
 
     private String address;
-
-    private Yepost yepost;
 
     private String status;
 
@@ -32,6 +24,9 @@ public class MerchantMarket {
 
     @Column(name = "latitude", nullable = false)
     private double latitude;
+
+    @OneToOne
+    private Epos epos;
 
     public MerchantMarket(String name, String address, String status, double longtitude, double latitude) {
         this.name = name;

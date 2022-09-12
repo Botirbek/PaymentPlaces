@@ -17,7 +17,7 @@ public class BotUserService {
     private final MerchantRepository merchantRepository;
 
     public BotUser existUser(String chatId) {
-        Optional<BotUser> byChat_id = botUserRepository.findByChat_id(chatId);
+        Optional<BotUser> byChat_id = botUserRepository.findByChatId(chatId);
         return byChat_id.get();
     }
 

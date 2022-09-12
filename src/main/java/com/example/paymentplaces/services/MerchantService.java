@@ -1,6 +1,8 @@
 package com.example.paymentplaces.services;
 
 import com.example.paymentplaces.dto.merchant.MerchantUpdateDTO;
+import com.example.paymentplaces.dto.merchantMarket.EposDTO;
+import com.example.paymentplaces.entity.Epos;
 import com.example.paymentplaces.entity.MerchantMarket;
 import com.example.paymentplaces.enums.MerchatnStatusEnum;
 import com.example.paymentplaces.dto.merchant.MerchantCreateDTO;
@@ -40,7 +42,11 @@ public class MerchantService {
                                 merchantMarketCreateDTO.getAddress(),
                                 MerchatnStatusEnum.ACTIVE.name(),
                                 merchantMarketCreateDTO.getLatitude(),
-                                merchantMarketCreateDTO.getLongtitude()
+                                merchantMarketCreateDTO.getLongtitude(),
+                                Epos.builder()
+                                        .merchant_id(merchantMarketCreateDTO.getEpos().getMerchant_id())
+                                        .terminal_id(merchantMarketCreateDTO.getEpos().getTerminal_id())
+                                        .build()
                         )));
 
         Merchant merchant = Merchant.builder()
@@ -72,7 +78,6 @@ public class MerchantService {
         if (dto.getOrganizationName() != null) merchant.setOrganizationName(dto.getOrganizationName());
 
         merchantRepository.save(merchant);
-
         return ResponseEntity.ok(new DataDTO<>(merchant.getId()));
     }
 

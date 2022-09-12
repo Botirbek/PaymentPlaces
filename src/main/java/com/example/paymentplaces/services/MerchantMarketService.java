@@ -5,6 +5,7 @@ import com.example.paymentplaces.dto.merchantMarket.MerchantMarketCreateDTO;
 import com.example.paymentplaces.dto.merchantMarket.MerchantMarketUpdatedDTO;
 import com.example.paymentplaces.dto.merchantMarket.NearMerchantMarketDTO;
 import com.example.paymentplaces.dto.response.DataDTO;
+import com.example.paymentplaces.entity.Epos;
 import com.example.paymentplaces.entity.MerchantMarket;
 import com.example.paymentplaces.enums.MerchatnStatusEnum;
 import com.example.paymentplaces.repository.MerchantMarketRepository;
@@ -48,6 +49,10 @@ public class MerchantMarketService {
                 .latitude(dto.getLatitude())
                 .longtitude(dto.getLongtitude())
                 .status(MerchatnStatusEnum.ACTIVE.name())
+                .epos(Epos.builder()
+                        .merchant_id(dto.getEpos().getMerchant_id())
+                        .terminal_id(dto.getEpos().getTerminal_id())
+                        .build())
                 .build();
 
         merchantMarketRepository.save(build);
@@ -67,6 +72,11 @@ public class MerchantMarketService {
         if (dto.getName() != null) merchantMarket.setName(dto.getName());
         if (dto.getLatitude() != 0) merchantMarket.setLatitude(dto.getLatitude());
         if (dto.getLongtitude() != 0) merchantMarket.setLongtitude(dto.getLongtitude());
+        if (dto.getEpos() != null) merchantMarket.setEpos(
+                Epos.builder()
+                        .merchant_id(dto.getEpos().getMerchant_id())
+                        .terminal_id(dto.getEpos().getTerminal_id())
+                        .build());
 
         merchantMarketRepository.save(merchantMarket);
 
@@ -89,21 +99,5 @@ public class MerchantMarketService {
 
         return ResponseEntity.ok(new DataDTO<>(nearMerchantMarketDTOS));
     }
-
-//    private static double distance(double lat1, double lon1, double lat2, double lon2) {
-//        if ((lat1 == lat2) && (lon1 == lon2)) {
-//            return 0;
-//        }
-//        else {
-//            double theta = lon1 - lon2;
-//            double dist = Math.sin(Math.toRadians(lat1)) * Math.sin(Math.toRadians(lat2)) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.cos(Math.toRadians(theta));
-//            dist = Math.acos(dist);
-//            dist = Math.toDegrees(dist);
-//            dist = dist * 60 * 1.1515;
-//            dist = dist * 1.609344;
-//
-//            return (dist);
-//        }
-//    }
 
 }

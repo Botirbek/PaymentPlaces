@@ -4,6 +4,7 @@ import com.example.paymentplaces.bot.entity.BotUser;
 import com.example.paymentplaces.bot.enums.UserStateEnum;
 import com.example.paymentplaces.bot.service.BotUserService;
 import com.example.paymentplaces.entity.Merchant;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class NotificationBot extends TelegramLongPollingBot {
 
     String BOT_TOKEN = "5392540866:AAFTqmex_jx_kes547_ZiwvvroTBVO7NJ1o";

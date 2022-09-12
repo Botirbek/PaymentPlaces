@@ -21,5 +21,6 @@ public class MerchantMarketUpdatedDTO implements BaseDTO {
     private String address;
     private double longtitude;
     private double latitude;
+    private EposDTO epos;
 
 }

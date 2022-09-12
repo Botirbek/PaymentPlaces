@@ -1,9 +1,6 @@
 package com.example.paymentplaces.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,11 +10,8 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-public class Merchant {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+@EqualsAndHashCode(callSuper=false)
+public class Merchant extends BasicEntity{
 
     @Column(name = "organization_Name")
     private String organizationName;

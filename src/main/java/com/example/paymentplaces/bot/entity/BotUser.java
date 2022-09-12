@@ -19,7 +19,7 @@ public class BotUser {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String  chat_id;
+    private String  chatId;
 
     private Long Merchant_id;
 
