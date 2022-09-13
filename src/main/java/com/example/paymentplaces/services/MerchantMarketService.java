@@ -6,9 +6,11 @@ import com.example.paymentplaces.dto.merchantMarket.MerchantMarketUpdatedDTO;
 import com.example.paymentplaces.dto.merchantMarket.NearMerchantMarketDTO;
 import com.example.paymentplaces.dto.response.DataDTO;
 import com.example.paymentplaces.entity.Epos;
+import com.example.paymentplaces.entity.Merchant;
 import com.example.paymentplaces.entity.MerchantMarket;
 import com.example.paymentplaces.enums.MerchatnStatusEnum;
 import com.example.paymentplaces.repository.MerchantMarketRepository;
+import com.example.paymentplaces.repository.MerchantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,13 +24,15 @@ import java.util.Optional;
 public class MerchantMarketService {
 
     private final MerchantMarketRepository merchantMarketRepository;
+    private final MerchantRepository merchantRepository;
 
-    public ResponseEntity<DataDTO<Boolean>> delete(Long id) {
+    public ResponseEntity<DataDTO<Boolean>> delete(Long id, Integer updatedBy) {
         Optional<MerchantMarket> byId = merchantMarketRepository.findById(id);
-        if (byId.isEmpty()){
+        if (byId.isEmpty()) {
             return ResponseEntity.ok(new DataDTO<>(false));
         }
         byId.get().setStatus(MerchatnStatusEnum.DELETED.name());
+        byId.get().setUpdatedBy(updatedBy);
 
         merchantMarketRepository.save(byId.get());
         return ResponseEntity.ok(new DataDTO<>(true));
@@ -43,27 +47,32 @@ public class MerchantMarketService {
     }
 
     public ResponseEntity<DataDTO<Long>> create(MerchantMarketCreateDTO dto) {
-        MerchantMarket build = MerchantMarket.builder()
+
+        Epos epos = Epos.builder()
+                .merchant_id(dto.getEpos().getMerchant_id())
+                .terminal_id(dto.getEpos().getTerminal_id())
+                .build();
+
+        MerchantMarket merchantMarket = MerchantMarket.createdDtoBuilder()
                 .address(dto.getAddress())
                 .name(dto.getName())
                 .latitude(dto.getLatitude())
                 .longtitude(dto.getLongtitude())
-                .status(MerchatnStatusEnum.ACTIVE.name())
-                .epos(Epos.builder()
-                        .merchant_id(dto.getEpos().getMerchant_id())
-                        .terminal_id(dto.getEpos().getTerminal_id())
-                        .build())
+                .epos(epos)
+                .createdBy(dto.getCreatedBy())
                 .build();
 
-        merchantMarketRepository.save(build);
+        merchantMarket.setMerchant(merchantRepository.findById(dto.getMerchantId()).get());
 
-        return ResponseEntity.ok(new DataDTO<>(build.getId()));
+        merchantMarketRepository.save(merchantMarket);
+
+        return ResponseEntity.ok(new DataDTO<>(merchantMarket.getId()));
     }
 
     public ResponseEntity<DataDTO<Long>> update(MerchantMarketUpdatedDTO dto) {
         Optional<MerchantMarket> byId = merchantMarketRepository.findById(dto.getId());
 
-        if (byId.isEmpty()){
+        if (byId.isEmpty()) {
             return ResponseEntity.ok(new DataDTO<>(null));
         }
 
@@ -78,6 +87,7 @@ public class MerchantMarketService {
                         .terminal_id(dto.getEpos().getTerminal_id())
                         .build());
 
+        merchantMarket.setUpdatedBy(dto.getUpdatedBy());
         merchantMarketRepository.save(merchantMarket);
 
         return ResponseEntity.ok(new DataDTO<>(merchantMarket.getId()));
@@ -98,6 +108,11 @@ public class MerchantMarketService {
         ).toList();
 
         return ResponseEntity.ok(new DataDTO<>(nearMerchantMarketDTOS));
+    }
+
+    public ResponseEntity<DataDTO<MerchantMarket>> getById(Long id) {
+        MerchantMarket merchantMarket = merchantMarketRepository.findById(id).get();
+        return ResponseEntity.ok(new DataDTO<>(merchantMarket));
     }
 
 }

@@ -2,7 +2,6 @@ package com.example.paymentplaces.dto.merchantMarket;
 
 
 import com.example.paymentplaces.dto.base.BaseDTO;
-import com.example.paymentplaces.entity.Epos;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +14,8 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @Builder
 public class MerchantMarketCreateDTO implements BaseDTO {
+
+    private Long merchantId;
 
     @NotBlank(message = "Merchant Market Name cannot be blank")
     private String name;
@@ -29,4 +30,7 @@ public class MerchantMarketCreateDTO implements BaseDTO {
     private double latitude;
 
     private EposDTO epos;
+
+    private Integer createdBy;
+
 }

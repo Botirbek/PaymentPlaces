@@ -29,4 +29,6 @@ public class MerchantUpdateDTO implements BaseDTO {
 
     private int logo;
 
+    private Integer updatedBy;
+
 }

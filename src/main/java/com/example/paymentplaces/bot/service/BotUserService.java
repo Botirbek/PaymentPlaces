@@ -21,7 +21,6 @@ public class BotUserService {
         return byChat_id.get();
     }
 
-
     public Merchant getById(Long merchant_id) {
         Optional<Merchant> byId = merchantRepository.findById(merchant_id);
         if (byId.isEmpty()){

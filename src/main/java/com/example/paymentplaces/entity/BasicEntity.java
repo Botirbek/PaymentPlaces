@@ -1,14 +1,12 @@
 package com.example.paymentplaces.entity;
 
-import lombok.AccessLevel;
+import com.example.paymentplaces.enums.MerchatnStatusEnum;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
@@ -24,20 +22,22 @@ public abstract class BasicEntity {
     @Column(nullable = false, updatable = false)
     private Long id;
 
+    protected String status = MerchatnStatusEnum.ACTIVE.name();
+
     @Column(updatable = false)
     @CreationTimestamp
     @CreatedDate
-    LocalDateTime createdDate;
+    private LocalDateTime createdDate;
 
     @UpdateTimestamp
     @LastModifiedDate
-    LocalDateTime updatedDate;
+    private LocalDateTime updatedDate;
 
     @Column(updatable = false)
     @CreatedBy
-    int createdBy;
+    protected  int createdBy;
 
     @LastModifiedDate
-    int updatedBy;
+    protected  int updatedBy;
 
 }

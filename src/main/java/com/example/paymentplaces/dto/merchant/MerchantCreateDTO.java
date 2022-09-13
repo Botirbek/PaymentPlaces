@@ -24,13 +24,15 @@ public class MerchantCreateDTO implements BaseDTO {
     @NotBlank(message = "MFO cannot be blank")
     private String MFO;
 
-//    @NotBlank(message = "INN cannot be blank")
+    @NotBlank(message = "INN cannot be blank")
     private int INN;
 
     @NotBlank(message = "Phone Number cannot be blank")
     private String phoneNumber;
 
     private int logo;
+
+    private Integer createdBy;
 
     private List<MerchantMarketCreateDTO> merchantMarketList;
 }

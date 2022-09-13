@@ -1,13 +1,13 @@
 package com.example.paymentplaces.services;
 
 import com.example.paymentplaces.dto.merchant.MerchantUpdateDTO;
-import com.example.paymentplaces.dto.merchantMarket.EposDTO;
 import com.example.paymentplaces.entity.Epos;
 import com.example.paymentplaces.entity.MerchantMarket;
 import com.example.paymentplaces.enums.MerchatnStatusEnum;
 import com.example.paymentplaces.dto.merchant.MerchantCreateDTO;
 import com.example.paymentplaces.dto.response.DataDTO;
 import com.example.paymentplaces.entity.Merchant;
+import com.example.paymentplaces.repository.MerchantMarketRepository;
 import com.example.paymentplaces.repository.MerchantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,44 +22,51 @@ import java.util.Optional;
 public class MerchantService {
 
     private final MerchantRepository merchantRepository;
+    private final MerchantMarketRepository merchantMarketRepository;
 
-    public ResponseEntity<DataDTO<Boolean>> delete(Long id) {
+    public ResponseEntity<DataDTO<Boolean>> delete(Long id,Integer updatedBy) {
         Optional<Merchant> byId = merchantRepository.findById(id);
         if (byId.isEmpty()){
             return ResponseEntity.ok(new DataDTO<>(false));
         }
         byId.get().setStatus(MerchatnStatusEnum.DELETED.name());
+        byId.get().setUpdatedBy(updatedBy);
         merchantRepository.save(byId.get());
         return ResponseEntity.ok(new DataDTO<>(true));
     }
 
     public ResponseEntity<DataDTO<Long>> create(MerchantCreateDTO dto) {
         List<MerchantMarket> list = new ArrayList<>();
-        dto.getMerchantMarketList()
-                .forEach(merchantMarketCreateDTO ->
-                        list.add(new MerchantMarket(
-                                merchantMarketCreateDTO.getName(),
-                                merchantMarketCreateDTO.getAddress(),
-                                MerchatnStatusEnum.ACTIVE.name(),
-                                merchantMarketCreateDTO.getLatitude(),
-                                merchantMarketCreateDTO.getLongtitude(),
-                                Epos.builder()
-                                        .merchant_id(merchantMarketCreateDTO.getEpos().getMerchant_id())
-                                        .terminal_id(merchantMarketCreateDTO.getEpos().getTerminal_id())
-                                        .build()
-                        )));
 
-        Merchant merchant = Merchant.builder()
+        Merchant merchant = Merchant.createdDtoBuilder()
                 .INN(dto.getINN())
                 .MFO(dto.getMFO())
                 .organizationName(dto.getOrganizationName())
                 .phoneNumber(dto.getPhoneNumber())
-                .status(MerchatnStatusEnum.ACTIVE.name())
-                .merchantMarketList(list)
                 .logo(dto.getLogo())
+                .createdBy(dto.getCreatedBy())
                 .build();
 
         Merchant save = merchantRepository.save(merchant);
+
+        dto.getMerchantMarketList()
+                .forEach(merchantMarketCreateDTO ->
+                        list.add((MerchantMarket.createdDtoBuilder()
+                                .name(merchantMarketCreateDTO.getName())
+                                .address(merchantMarketCreateDTO.getAddress())
+                                .latitude(merchantMarketCreateDTO.getLatitude())
+                                .longtitude(merchantMarketCreateDTO.getLongtitude())
+                                .epos(Epos.builder()
+                                        .merchant_id(merchantMarketCreateDTO.getEpos().getMerchant_id())
+                                        .terminal_id(merchantMarketCreateDTO.getEpos().getTerminal_id())
+                                        .build())
+                                .createdBy(merchantMarketCreateDTO.getCreatedBy())
+                                .merchant(merchant)
+                                .build())
+                        ));
+
+        merchant.setMerchantMarketList(list);
+        merchantRepository.save(merchant);
         return ResponseEntity.ok(new DataDTO<>(save.getId()));
     }
 
@@ -77,6 +84,7 @@ public class MerchantService {
         if (dto.getLogo() != 0) merchant.setLogo(dto.getLogo());
         if (dto.getOrganizationName() != null) merchant.setOrganizationName(dto.getOrganizationName());
 
+        merchant.setUpdatedBy(dto.getUpdatedBy());
         merchantRepository.save(merchant);
         return ResponseEntity.ok(new DataDTO<>(merchant.getId()));
     }
@@ -89,4 +97,8 @@ public class MerchantService {
         return ResponseEntity.ok(new DataDTO<>(merchantRepository.findAllByStatus(status)));
     }
 
+    public ResponseEntity<DataDTO<Merchant>> getById(Long id) {
+        Merchant merchant = merchantRepository.findById(id).get();
+        return ResponseEntity.ok(new DataDTO<>(merchant));
+    }
 }

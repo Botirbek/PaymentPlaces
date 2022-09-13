@@ -18,7 +18,7 @@ public interface GenericCrudController<CD extends BaseDTO, UD extends BaseDTO, R
 
     ResponseEntity<DataDTO<Long>> create (CD dto);
     ResponseEntity<DataDTO<Long>> update (UD dto);
-    ResponseEntity<DataDTO<Boolean>> delete (Long id);
+    ResponseEntity<DataDTO<Boolean>> delete (Long id, Integer updatedBy);
 
     ResponseEntity<DataDTO<List<R>>> getALl();
 }

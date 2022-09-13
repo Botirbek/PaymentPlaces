@@ -35,12 +35,12 @@ public class MerchantConroller implements GenericCrudController<MerchantCreateDT
 
     @Override
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<DataDTO<Boolean>> delete(Long id) {
-        return merchantService.delete(id);
+    public ResponseEntity<DataDTO<Boolean>> delete(Long id, Integer updatedBy) {
+        return merchantService.delete(id, updatedBy);
     }
 
     @Override
-    @GetMapping("/get")
+    @GetMapping("/getAll")
     public ResponseEntity<DataDTO<List<Merchant>>> getALl() {
         return merchantService.getAll();
     }
@@ -58,6 +58,11 @@ public class MerchantConroller implements GenericCrudController<MerchantCreateDT
     @GetMapping("/getAllDeleted")
     public ResponseEntity<DataDTO<List<Merchant>>> getAllDeleted() {
         return merchantService.getAllbyStatus(MerchatnStatusEnum.DELETED.name());
+    }
+
+    @GetMapping("/get")
+    public ResponseEntity<DataDTO<Merchant>> getById(@RequestParam Long id) {
+        return merchantService.getById(id);
     }
 
 }

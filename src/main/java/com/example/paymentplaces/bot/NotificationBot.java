@@ -45,17 +45,16 @@ public class NotificationBot extends TelegramLongPollingBot {
             if (botUser==null){
                 registerMerchant(update, botUser);
             }else {
-                Merchant merchant = botUserService.getById(botUser.getMerchant_id());
-                send("Assalomu alaykum, "+merchant.getOrganizationName(),chatId);
-                botUser.setUserStateEnum(UserStateEnum.WORK_STATE);
-                botUserService.save(botUser);
+//                Merchant merchant = botUserService.getById(botUser.getMerchantId());
+//                send("Assalomu alaykum, "+merchant.getOrganizationName(),chatId);
+//                botUser.setUserStateEnum(UserStateEnum.WORK_STATE);
+//                botUserService.save(botUser);
             }
         }
     }
 
     private void registerMerchant(Update update, BotUser botUser) {
-        botUser.setUserStateEnum(UserStateEnum.SHARE_CONTACT);
-
+//        botUser.setUserStateEnum(UserStateEnum.SHARE_CONTACT);
     }
 
     public void send(ReplyKeyboardMarkup menu, String text, String chatId) {

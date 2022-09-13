@@ -1,14 +1,12 @@
 package com.example.paymentplaces.bot.entity;
 
 import com.example.paymentplaces.bot.enums.UserStateEnum;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -21,9 +19,9 @@ public class BotUser {
 
     private String  chatId;
 
-    private Long Merchant_id;
+    private Long MerchantId;
 
-    private String phone_number;
+    private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
     private UserStateEnum userStateEnum;

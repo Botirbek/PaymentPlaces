@@ -35,12 +35,12 @@ public class MerchantMarketConroller implements GenericCrudController<MerchantMa
 
     @Override
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<DataDTO<Boolean>> delete(Long id) {
-        return merchantMarketService.delete(id);
+    public ResponseEntity<DataDTO<Boolean>> delete(Long id, Integer updatedBy) {
+        return merchantMarketService.delete(id, updatedBy);
     }
 
     @Override
-    @GetMapping("/get")
+    @GetMapping("/getAll")
     public ResponseEntity<DataDTO<List<MerchantMarket>>> getALl() {
         return merchantMarketService.getAll();
     }
@@ -63,6 +63,12 @@ public class MerchantMarketConroller implements GenericCrudController<MerchantMa
     @GetMapping("/getNearMarkets")
     public ResponseEntity<DataDTO<List<NearMerchantMarketDTO>>> getNearMarkets(LocationDTO dto) {
         return merchantMarketService.getNearMarkets(dto);
+    }
+
+
+    @GetMapping("/get")
+    public ResponseEntity<DataDTO<MerchantMarket>> getById(@RequestParam Long id) {
+        return merchantMarketService.getById(id);
     }
 
 }
