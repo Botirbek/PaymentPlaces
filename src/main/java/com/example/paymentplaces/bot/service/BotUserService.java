@@ -18,7 +18,8 @@ public class BotUserService {
 
     public BotUser existUser(String chatId) {
         Optional<BotUser> byChat_id = botUserRepository.findByChatId(chatId);
-        return byChat_id.get();
+        if (byChat_id.isPresent()) return byChat_id.get();
+        return null;
     }
 
     public Merchant getById(Long merchant_id) {

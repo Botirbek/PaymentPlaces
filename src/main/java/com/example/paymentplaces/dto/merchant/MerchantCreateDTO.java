@@ -2,8 +2,6 @@ package com.example.paymentplaces.dto.merchant;
 
 import com.example.paymentplaces.dto.base.BaseDTO;
 import com.example.paymentplaces.dto.merchantMarket.MerchantMarketCreateDTO;
-import com.example.paymentplaces.entity.MerchantMarket;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

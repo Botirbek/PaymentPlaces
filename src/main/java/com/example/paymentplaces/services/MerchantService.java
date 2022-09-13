@@ -98,7 +98,8 @@ public class MerchantService {
     }
 
     public ResponseEntity<DataDTO<Merchant>> getById(Long id) {
-        Merchant merchant = merchantRepository.findById(id).get();
-        return ResponseEntity.ok(new DataDTO<>(merchant));
+        Optional<Merchant> byId = merchantRepository.findById(id);
+        if (byId.isPresent()) return ResponseEntity.ok(new DataDTO<>(byId.get()));
+        return ResponseEntity.ok(new DataDTO<>(null));
     }
 }
