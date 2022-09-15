@@ -1,39 +1,34 @@
 package com.example.paymentplaces.bot;
 
-import com.example.paymentplaces.bot.entity.BotUser;
+import com.example.paymentplaces.bot.entity.UserBot;
 import com.example.paymentplaces.bot.enums.UserStateEnum;
 import com.example.paymentplaces.bot.service.BotUserService;
 import com.example.paymentplaces.entity.Merchant;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.checkerframework.checker.regex.qual.Regex;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Service
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+@Component
+@RequiredArgsConstructor
 public class NotificationBot extends TelegramLongPollingBot {
+    private final BotUserService botUserService;
 
     String BOT_TOKEN = "5392540866:AAFTqmex_jx_kes547_ZiwvvroTBVO7NJ1o";
     String BOT_USERNAME = "http://t.me/microservice_notification_bot";
-
-    private final String SMS_BOT ="\uD83D\uDCB8 Операция\n" +
-            "\uD83D\uDCB0 1.270.000,00 UZS\n" +
-            "\uD83D\uDCCD Merchant Market Name\n" +
-            "\uD83D\uDCB3 HUMOCARD *6649\n" +
-            "\uD83D\uDD53 23:36 12.09.2022\n" +
-            "\uD83D\uDC68\u200D\uD83E\uDDB0 Client name\n";
-
-    @Autowired  BotUserService botUserService;
-
+    private String chatId;
 
     @Override
     public String getBotUsername() {
@@ -52,31 +47,73 @@ public class NotificationBot extends TelegramLongPollingBot {
 
         if (update.hasMessage()) {
             Message message = update.getMessage();
-            String chatId = message.getChatId().toString();
-            send(SMS_BOT, chatId);
-//            BotUser botUser = botUserService.existUser(chatId);
-//
-//            if (message.equals("/start")) {
-//                if (botUser == null) {
-//                    registerMerchant(update, botUser);
-//                } else {
-//                    Merchant merchant = botUserService.getById(botUser.getMerchantId());
-//                    send("Assalomu alaykum, " + merchant.getOrganizationName(), chatId);
-//                    botUser.setUserStateEnum(UserStateEnum.WORK_STATE);
-//                    botUserService.save(botUser);
-//                }
-//            }
+            this.chatId = message.getChatId().toString();
+
+            UserBot userBot = botUserService.existUser(chatId);
+            if (userBot == null) userBot.setUserStateEnum(UserStateEnum.START);
+
+            switch (userBot.getUserStateEnum()) {
+                case START -> {
+                    send("Royxatdan o'tish uchun merchantga biriktirilgan tel nomer jo'nating");
+                    shareContact(update);
+                    userBot.setUserStateEnum(UserStateEnum.SHARE_CONTACT);
+                    botUserService.save(userBot);
+                }
+
+                case SHARE_CONTACT -> registerUser(update, userBot);
+
+                case WORK_STATE -> {
+                    Merchant merchant = botUserService.getById(userBot.getMerchantId());
+                    send("Assalomu alaykum, " + merchant.getOrganizationName() + " siz royxatdan o'tgansiz");
+                    botUserService.save(userBot);
+                }
+            }
         }
     }
 
-    private void registerMerchant(Update update, BotUser botUser) {
-        botUser.setUserStateEnum(UserStateEnum.SHARE_CONTACT);
+    private void registerUser(Update update, UserBot userBot) {
+        Message message = update.getMessage();
+        String phoneNumber = "";
+        if (message.hasContact()) {
+            phoneNumber = message.getContact().getPhoneNumber();
+        } else if (message.hasText()) {
+            phoneNumber = message.getText();
+        }
+
+        if (userBot.getPhoneNumber().equals(phoneNumber)) {
+            userBot.setChatId(this.chatId);
+            userBot.setUserStateEnum(UserStateEnum.WORK_STATE);
+            botUserService.save(userBot);
+            send("Bot uchun ro'yxtadan utdingiz");
+        }else {
+            send("Bu nomer Merchant sifatida royxatdan utmagan");
+        }
     }
 
-    public void send(ReplyKeyboardMarkup menu, String text, String chatId) {
+    private void shareContact(Update update) {
+        Message message = update.hasMessage() ? update.getMessage() : update.getCallbackQuery().getMessage();
+        SendMessage sendMessage = new SendMessage(message.getChatId().toString(), message.getChat().getFirstName() + "   ENTER_PHONE_NUMBER_TEXT");
+        ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
+        List<KeyboardRow> rowList = new ArrayList<>();
+        markup.setKeyboard(rowList);
+        markup.setResizeKeyboard(true);
+
+        KeyboardButton number = new KeyboardButton("Share Contact");
+        number.setRequestContact(true);
+        KeyboardButton back = new KeyboardButton("Back");
+        rowList.add(new KeyboardRow(Collections.singletonList(number)));
+        rowList.add(new KeyboardRow(Collections.singletonList(back)));
+
+        markup.setSelective(true);
+        markup.setResizeKeyboard(true);
+        markup.setOneTimeKeyboard(false);
+        send(markup, "Frf");
+    }
+
+    public void send(ReplyKeyboardMarkup menu, String text) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText(text);
-        sendMessage.setChatId(chatId);
+        sendMessage.setChatId(this.chatId);
         sendMessage.setReplyMarkup(menu);
 
         try {
@@ -84,6 +121,7 @@ public class NotificationBot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+
     }
 
     public void send(InlineKeyboardMarkup menu, String text, String chatId) {
@@ -99,9 +137,23 @@ public class NotificationBot extends TelegramLongPollingBot {
         }
     }
 
-    public void send(String text, String chatId) {
+    public void send(String text, String phoneNumber) {
+        UserBot user = botUserService.findByPhoneNumber(phoneNumber);
+
         SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(chatId);
+        sendMessage.setChatId(user.getChatId());
+        sendMessage.setText(text);
+
+        try {
+            super.execute(sendMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void send(String text) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(this.chatId);
         sendMessage.setText(text);
 
         try {

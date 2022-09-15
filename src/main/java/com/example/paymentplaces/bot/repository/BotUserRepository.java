@@ -1,14 +1,15 @@
 package com.example.paymentplaces.bot.repository;
 
-import com.example.paymentplaces.bot.entity.BotUser;
+import com.example.paymentplaces.bot.entity.UserBot;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface BotUserRepository extends JpaRepository<BotUser, Long> {
+public interface BotUserRepository extends JpaRepository<UserBot, Long> {
 
-    Optional<BotUser> findByChatId(String chatId);
+    Optional<UserBot> findByChatId(String chatId);
+    Optional<UserBot> findByPhoneNumber(String phoneNumber);
 
 }

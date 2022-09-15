@@ -11,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 @Entity
-public class BotUser {
+public class UserBot {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

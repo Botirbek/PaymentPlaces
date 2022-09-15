@@ -4,7 +4,6 @@ import com.example.paymentplaces.dto.merchant.MerchantCreateDTO;
 import com.example.paymentplaces.dto.merchant.MerchantUpdateDTO;
 import com.example.paymentplaces.dto.response.DataDTO;
 import com.example.paymentplaces.entity.Merchant;
-import com.example.paymentplaces.entity.MerchantMarket;
 import com.example.paymentplaces.enums.MerchatnStatusEnum;
 import com.example.paymentplaces.services.MerchantService;
 import lombok.RequiredArgsConstructor;
