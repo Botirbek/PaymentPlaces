@@ -12,11 +12,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class NotificationDTO {
+    private Long merchatId;
+    private Long marketId;
     private String clientName;
     private String phoneNumber;
     private String cardNumber;
-    private String merchatName;  // merchat name + market name
-    private String marketAddress;
     private Double summa;
-    private LocalDateTime dateTime;
+    private String dateTime;
 }

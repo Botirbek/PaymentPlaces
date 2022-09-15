@@ -5,7 +5,6 @@ import com.example.paymentplaces.bot.enums.UserStateEnum;
 import com.example.paymentplaces.bot.service.BotUserService;
 import com.example.paymentplaces.entity.Merchant;
 import lombok.RequiredArgsConstructor;
-import org.checkerframework.checker.regex.qual.Regex;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -50,14 +49,17 @@ public class NotificationBot extends TelegramLongPollingBot {
             this.chatId = message.getChatId().toString();
 
             UserBot userBot = botUserService.existUser(chatId);
-            if (userBot == null) userBot.setUserStateEnum(UserStateEnum.START);
+            if (userBot == null) {
+                userBot = new UserBot();
+                userBot.setUserStateEnum(UserStateEnum.START);
+            }
 
             switch (userBot.getUserStateEnum()) {
                 case START -> {
-                    send("Royxatdan o'tish uchun merchantga biriktirilgan tel nomer jo'nating");
-                    shareContact(update);
+                    userBot.setChatId(this.chatId);
                     userBot.setUserStateEnum(UserStateEnum.SHARE_CONTACT);
                     botUserService.save(userBot);
+                    shareContact(update);
                 }
 
                 case SHARE_CONTACT -> registerUser(update, userBot);
@@ -80,13 +82,16 @@ public class NotificationBot extends TelegramLongPollingBot {
             phoneNumber = message.getText();
         }
 
-        if (userBot.getPhoneNumber().equals(phoneNumber)) {
+        if (userBot.getPhoneNumber()!=null && userBot.getPhoneNumber().equals(phoneNumber)) {
             userBot.setChatId(this.chatId);
             userBot.setUserStateEnum(UserStateEnum.WORK_STATE);
             botUserService.save(userBot);
             send("Bot uchun ro'yxtadan utdingiz");
         }else {
             send("Bu nomer Merchant sifatida royxatdan utmagan");
+            userBot.setUserStateEnum(UserStateEnum.SHARE_CONTACT);
+            botUserService.save(userBot);
+//            shareContact(update);
         }
     }
 
@@ -107,7 +112,7 @@ public class NotificationBot extends TelegramLongPollingBot {
         markup.setSelective(true);
         markup.setResizeKeyboard(true);
         markup.setOneTimeKeyboard(false);
-        send(markup, "Frf");
+        send(markup, "Royxatdan o'tish uchun merchantga biriktirilgan tel nomer jo'nating");
     }
 
     public void send(ReplyKeyboardMarkup menu, String text) {
